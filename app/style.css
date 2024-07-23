@@ -33,17 +33,17 @@ canvas {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  align-items: center; /* Hide overflow to manage scrollbars */
+  align-items: center;
 }
 
 .chat-box .messages {
   flex-grow: 1;
-  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-y: auto;
   margin-bottom: 10px;
-  scrollbar-width: none; /* Firefox */
+  scrollbar-width: none;
 }
 .chat-box::-webkit-scrollbar {
-  display: none; /* Chrome, Safari */
+  display: none;
 }
 .chat-box input {
   width: 100%;
@@ -61,7 +61,7 @@ canvas {
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.5);
-  padding-top: 100px;
+  padding-top: 20%;
 }
 
 .modal-content {
@@ -140,7 +140,7 @@ align-items: center;
 display: flex;
 gap: 10px;
 justify-content: space-between;
-margin-bottom: 10px; /* Space between rows */
+margin-bottom: 10px;
 }
 
 .color-block {
@@ -148,15 +148,43 @@ width: 30px;
 height: 30px;
 border-radius: 50%; 
 border-color: black;
-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5); /* Optional: Add shadow for better appearance */
+box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .color-block.selected {
-    border: 2px solid white; /* First border: white */
-    outline: 3px solid black; /* Second border: black */
-    box-shadow: 0 0 10px black; /* Optional: Add a glow effect */
+    border: 2px solid white;
+    outline: 3px solid black;
+    box-shadow: 0 0 10px black;
 }
 
+.score-container {
+    border-radius: 5px;
+    border: 2px solid black;
+    padding: 5px;
+    font-size: 16px;
+    color: black;
+    margin: 10px 0;
+}
 
+.score-header {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
 
+.score-list {
+    margin: 5px 0;
+}
+
+.score-entry {
+    margin: 5px 0;
+}
+
+.score-entry strong {
+    color: #000;
+}
+
+#notificationMessage {
+    font-weight: bold;
+    font-size: 30px;
+}
 
