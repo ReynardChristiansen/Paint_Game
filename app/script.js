@@ -12,6 +12,8 @@ const userNameInput = document.getElementById('userNameInput');
 let drawing = false;
 let currentPath = [];
 let userName = ''; // Store user name
+const colorBlocks = document.querySelectorAll('.color-block');
+let selectedColor = '#000000'; // Default drawing color
 
 // Connect to Socket.IO server
 const socket = io('ws://localhost:3500');
@@ -51,8 +53,8 @@ socket.on('activity', (name) => {
 });
 
 // Handle drawing data
-socket.on('drawing', (path) => {
-    drawPath(path, false);  // Draw without emitting to avoid recursion
+socket.on('drawing', (data) => {
+    drawPath(data.path, false, data.color);  // Draw without emitting to avoid recursion
 });
 
 // Handle canvas clear
@@ -67,7 +69,7 @@ function startDrawing(event) {
 
 function stopDrawing() {
     if (drawing) {
-        socket.emit('drawing', currentPath);
+        socket.emit('drawing', { path: currentPath, color: selectedColor });
     }
     drawing = false;
     ctx.beginPath();
@@ -82,7 +84,7 @@ function draw(event) {
 
     ctx.lineWidth = 5;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = selectedColor;
 
     ctx.lineTo(x, y);
     ctx.stroke();
@@ -107,10 +109,10 @@ function sendMessage(event) {
     }
 }
 
-function drawPath(path, shouldEmit = true) {
+function drawPath(path, shouldEmit = true, color = '#000000') {
     ctx.lineWidth = 5;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = 'black';
+    ctx.strokeStyle = color;
 
     ctx.beginPath();
     ctx.moveTo(path[0].x, path[0].y);
@@ -120,9 +122,22 @@ function drawPath(path, shouldEmit = true) {
     });
 
     if (shouldEmit) {
-        socket.emit('drawing', currentPath);
+        socket.emit('drawing', { path: currentPath, color: selectedColor });
     }
 }
+
+colorBlocks.forEach((block) => {
+    block.addEventListener('click', () => {
+        // Remove highlight from all color blocks
+        colorBlocks.forEach((b) => b.classList.remove('selected'));
+        
+        // Add highlight to the selected color block
+        block.classList.add('selected');
+        
+        // Update the selected color
+        selectedColor = block.style.backgroundColor;
+    });
+});
 
 // Event Listeners
 canvas.addEventListener('mousedown', startDrawing);
