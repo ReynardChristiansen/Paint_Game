@@ -15,15 +15,14 @@ const io = new Server(httpServer, {
 io.on('connection', (socket) => {
     console.log(`User ${socket.id.substring(0, 5)} connected`);
 
-
     // Handle incoming chat messages
     socket.on('message', (data) => {
         io.emit('message', data);
     });
 
     // Handle drawing data
-    socket.on('drawing', (path) => {
-        socket.broadcast.emit('drawing', path);
+    socket.on('drawing', (data) => {
+        socket.broadcast.emit('drawing', data);
     });
 
     // Handle canvas clear
