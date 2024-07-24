@@ -87,11 +87,12 @@ function connectToSocket() {
       console.log("Scores:", scores);
   
       const scoreEntries = Object.entries(scores)
-        .map(
-          ([userId, { score, username }]) =>
-            `<div class="score-entry"><strong>${username}:</strong> ${score} points</div>`
-        )
-        .join("");
+      .sort(([, a], [, b]) => b.score - a.score)
+      .map(
+        ([userId, { score, username }]) =>
+          `<div class="score-entry"><strong>${username}:</strong> ${score} points</div>`
+      )
+      .join("");
   
       chatMessages.innerHTML += `
                       <div class="score-container">
