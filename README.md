@@ -25,11 +25,11 @@ Draw-It-Out is an engaging online drawing and guessing game where players test t
 ## How to Start
 
 - Clone the repository.
-- Move to directory server.
+- Move to directory `server`.
 - Install dependencies using `npm install`.
 - Start the server using `npm start`.
 - Open live server.
-- Open the client by navigating to `http://127.0.0.1:5500/app/` in your web browser.
+- Open the client by navigating to `http://127.0.0.1:5500/Paint_Game/app/` in your web browser.
 - Enter your name to join the game and start playing!
 
 ## Technologies Used
