@@ -39,66 +39,72 @@ nameSubmit.onclick = () => {
 
 // Function to connect to Socket.IO server
 function connectToSocket() {
-  socket = io("ws://localhost:3500");
-
-  // Set up event listeners for socket
-  socket.on("connect", () => {
-    socket.emit("setName", userName);
-  });
-
-  socket.on("message", (data) => {
-    chatActivity.textContent = "";
-    const messageElement = document.createElement("div");
-    messageElement.textContent = data;
-    chatMessages.appendChild(messageElement);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  });
-
-  socket.on("activity", (name) => {
-    chatActivity.textContent = `${name} is typing...`;
-  });
-
-  socket.on("drawing", (data) => {
-    drawPath(data.path, false, data.color);
-  });
-
-  socket.on("clearCanvas", () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  });
-
-  socket.on("startDrawing", (word) => {
-    isDrawingAllowed = true;
-    showNotification(`${word}`);
-  });
-
-  socket.on("correctGuess", (userId) => {
-    if (socket.id === userId) {
-      showNotification("Congratulations! You guessed correctly!");
-    }
-  });
-
-  socket.on("updateScores", (scores) => {
-    console.log("Scores:", scores);
-
-    const scoreEntries = Object.entries(scores)
-      .map(
-        ([userId, { score, username }]) =>
-          `<div class="score-entry"><strong>${username}:</strong> ${score} points</div>`
-      )
-      .join("");
-
-    chatMessages.innerHTML += `
-                    <div class="score-container">
-                        <div class="score-header">
-                            Score:
-                        </div>
-                        <div class="score-list">
-                            ${scoreEntries}
-                        </div>
-                    </div>
-                `;
-  });
-}
+    socket = io("ws://localhost:3500");
+  
+    // Set up event listeners for socket
+    socket.on("connect", () => {
+      socket.emit("setName", userName);
+    });
+  
+    socket.on("message", (data) => {
+      chatActivity.textContent = "";
+      const messageElement = document.createElement("div");
+      messageElement.textContent = data;
+      chatMessages.appendChild(messageElement);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+  
+    socket.on("activity", (name) => {
+      chatActivity.textContent = `${name} is typing...`;
+    });
+  
+    socket.on("drawing", (data) => {
+      drawPath(data.path, false, data.color);
+    });
+  
+    socket.on("clearCanvas", () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    });
+  
+    socket.on("startDrawing", (word) => {
+      isDrawingAllowed = true;
+      chatInput.disabled = true;
+      showNotification(`${word}`);
+    });
+  
+    socket.on("endDrawing", () => {
+      isDrawingAllowed = false;
+      chatInput.disabled = false;
+    });
+  
+    socket.on("correctGuess", (userId) => {
+      if (socket.id === userId) {
+        showNotification("Congratulations! You guessed correctly!");
+      }
+    });
+  
+    socket.on("updateScores", (scores) => {
+      console.log("Scores:", scores);
+  
+      const scoreEntries = Object.entries(scores)
+        .map(
+          ([userId, { score, username }]) =>
+            `<div class="score-entry"><strong>${username}:</strong> ${score} points</div>`
+        )
+        .join("");
+  
+      chatMessages.innerHTML += `
+                      <div class="score-container">
+                          <div class="score-header">
+                              Score:
+                          </div>
+                          <div class="score-list">
+                              ${scoreEntries}
+                          </div>
+                      </div>
+                  `;
+    });
+  }
 
 function startDrawing(event) {
   if (!isDrawingAllowed) return;
@@ -143,18 +149,19 @@ function clearCanvas() {
   socket.emit("clearCanvas");
 }
 
+
 function sendMessage(event) {
-  if (event.key === "Enter") {
-    event.preventDefault();
-    const message = chatInput.value.trim();
-    if (message) {
-      socket.emit("message", `${userName}: ${message}`);
-      socket.emit("guess", message);
-      chatInput.value = "";
+    if (event.key === "Enter" && !chatInput.disabled) {
+      event.preventDefault();
+      const message = chatInput.value.trim();
+      if (message) {
+        socket.emit("message", `${userName}: ${message}`);
+        socket.emit("guess", message);
+        chatInput.value = "";
+      }
+      chatInput.focus();
     }
-    chatInput.focus();
   }
-}
 
 function drawPath(path, shouldEmit = true, color = "#000000") {
   ctx.lineWidth = 5;

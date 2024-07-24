@@ -88,11 +88,13 @@ let userScores = {};
 io.on("connection", (socket) => {
   console.log(`User ${socket.id.substring(0, 5)} connected`);
   users.push(socket);
-  userScores[socket.id] = 0;
   userScores[socket.id] = { score: 0, username: "" };
+
   // Handle incoming chat messages
   socket.on("message", (data) => {
-    io.emit("message", data);
+    if (socket !== currentDrawer) {
+      io.emit("message", data);
+    }
   });
 
   // Handle drawing data
@@ -134,15 +136,16 @@ io.on("connection", (socket) => {
       currentDrawer = null;
       currentWord = "";
       io.emit("clearCanvas");
+      io.emit("endDrawing");
       if (users.length >= 2) {
         startGame();
       }
     }
   });
 
-  // Handle quess
+  // Handle guess
   socket.on("guess", (guess) => {
-    if (guess.toLowerCase() === currentWord.toLowerCase()) {
+    if (socket !== currentDrawer && guess.toLowerCase() === currentWord.toLowerCase()) {
       userScores[socket.id].score += 10;
       io.emit(
         "message",
@@ -156,6 +159,7 @@ io.on("connection", (socket) => {
       currentDrawer = null;
       currentWord = "";
       io.emit("clearCanvas");
+      io.emit("endDrawing");
       if (users.length >= 2) {
         startGame();
       }
@@ -178,6 +182,7 @@ function startGame() {
     currentWord = "";
     io.emit("clearCanvas");
     io.emit("message", "Time's up! The drawing time has ended.");
+    io.emit("endDrawing");
     if (users.length >= 2) {
       startGame();
     }
