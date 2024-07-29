@@ -32,6 +32,9 @@ Draw-It-Out is an engaging online drawing and guessing game where players test t
 - Open the client by navigating to `http://127.0.0.1:5500/Paint_Game/app/` in your web browser.
 - Enter your name to join the game and start playing!
 
+## Game Requirement
+- **Minimum Players**: At least 2 players are required to start the game.
+  
 ## Technologies Used
 
 - Node.js
