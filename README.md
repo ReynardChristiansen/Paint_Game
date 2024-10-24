@@ -3,6 +3,7 @@
 
 Draw-It-Out is an engaging online drawing and guessing game where players test their creativity and guessing skills. Draw-It-Out allows players to take turns drawing a given word while others attempt to guess what it is. The game combines fun and interaction, making it perfect for playing with friends.
 
+![image alt](https://reynardchristiansen.github.io/porto/assets/project-11.png)
 
 ## How to Play
 
